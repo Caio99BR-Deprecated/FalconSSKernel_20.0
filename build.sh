@@ -16,7 +16,7 @@ clear
 # Devices available
 #
 # Xperia E1
-device_variants_1="D2004 D2005 D2104 D2105 D2114" device_defconfig_1="cyanogenmod_falconss_defconfig" device_name_1="Sony-XperiaE1"
+device_variants_1="D2004 D2005 D2104 D2105 D2114" device_defconfig_1="stock_jb_falconss_defconfig" device_name_1="Sony-XperiaE1"
 # Menu
 echo "${x} | ${color_green}Device choice${color_stock}"
 echo
@@ -156,7 +156,7 @@ then
 		echo "${custom_kernel_branch}" >> ${zip_out}/device.prop
 
 		# Stock edition
-		if [ "${custom_kernel_branch}" == "KK-Stock" ]
+		if [ "${custom_kernel_branch}" == "JB-Stock" ]
 		then
 			# Stock need new firmware files
 			mkdir -p ${zip_out}/wifi/
@@ -225,8 +225,8 @@ fi
 
 # Update DT Image to Live Ramdisk
 update_dt() {
-	chmod a+x ${original_dir}/zip-creator/base/dtbToolCM
-	${original_dir}/zip-creator/base/dtbToolCM -2 -s 2048 -p ${original_dir}/scripts/dtc/ ${original_dir}/arch/${ARCH}/boot/ -o ${original_dir}/zip-creator/base/dt.img
+	chmod a+x ${original_dir}/zip-creator/tools/dtbToolCM
+	${original_dir}/zip-creator/tools/dtbToolCM -2 -s 2048 -p ${original_dir}/scripts/dtc/ ${original_dir}/arch/${ARCH}/boot/ -o ${original_dir}/zip-creator/base/dt.img
 }
 
 # Wrong choice
@@ -249,9 +249,9 @@ then
 	color_yellow=$(tput bold)$(tput setaf 3)
 	color_blue=$(tput bold)$(tput setaf 4)
 	# Main Variables
-	custom_kernel=SSProj-CAFKernel
-	builder=TeamVee-SS
-	custom_kernel_branch=KK
+	custom_kernel=FSSK_20.0
+	builder=C9
+	custom_kernel_branch=JB-Stock
 	ARCH=arm
 
 	while true
@@ -329,8 +329,8 @@ then
 					kernel_build_output="(OFF)"
 				fi;;
 			6) kernel_build;;
-			7) zip_packer;;
-			8) zip_copy_adb;;
+#			7) zip_packer;;
+#			8) zip_copy_adb;;
 			q|e) echo "${x} | Ok, Bye!"; break;;
 			u) update_dt;;
 			*) wrong_choice;;
