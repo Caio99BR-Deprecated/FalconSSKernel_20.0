@@ -1120,6 +1120,13 @@ config MACH_FSM9XXX_SURF
 
 endmenu
 
+config MACH_SONY_FALCONSS
+	depends on ARCH_MSM8610
+	bool "Sony Mobile FalconSS"
+	default n
+	help
+	  Support for the SONY Mobile Xperia E1 device.
+
 config MSM_STACKED_MEMORY
 	bool "Stacked Memory"
 	default y
