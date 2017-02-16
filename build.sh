@@ -152,11 +152,11 @@ then
 		echo "${custom_kernel_branch}" >> ${zip_out}/device.prop
 
 		# Transform cmdline to CMDLINE_VARIABLE
-		CMDLINE_VARIABLE="$(cat zip-creator/base/cmdline)"
+		CMDLINE_VARIABLE="$(cat ${original_dir}/zip-creator/base/cmdline)"
 
 		rm -rf ${original_dir}/zip-creator/base/ramdisk.cpio.gz
 		cd ${original_dir}/zip-creator/base/root/
-		find . | cpio -o -H newc > ${original_dir}/zip-creator/base/ramdisk.cpio.gz
+		find . | cpio -o -H newc | gzip > ${original_dir}/zip-creator/base/ramdisk.cpio.gz
 		cd ${original_dir}/
 
 		chmod a+x ${original_dir}/zip-creator/tools/mkqcdtbootimg
