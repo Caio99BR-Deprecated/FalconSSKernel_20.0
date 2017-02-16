@@ -161,18 +161,6 @@
 			capella,ps_conf1_val = <0x0006>;
 			capella,ps_conf3_val = <0x3010>;
 		};
-		nfc-nci@0e {
-			compatible = "qcom,nfc-nci";
-			reg = <0x0e>;
-			qcom,irq-gpio = <&msmgpio 77 0x00>;
-			qcom,dis-gpio = <&msmgpio 93 0x00>;
-			qcom,clk-en-gpio = <&msmgpio 78 0x00>;
-			qcom,clk-src = "GPCLK";
-			interrupt-parent = <&msmgpio>;
-			interrupts = <77 0>;
-			qcom,clk-gpio = <&pm8110_gpios 1 0>;
-		};
-		
 		/*++ Huize - 20130702 Add for using QUP3 ++*/
 		bma250e@18 {
 			compatible = "accelerometer,bma250e";
