@@ -154,6 +154,11 @@ then
 		# Transform cmdline to CMDLINE_VARIABLE
 		CMDLINE_VARIABLE="$(cat zip-creator/base/cmdline)"
 
+		rm -rf ${original_dir}/zip-creator/base/ramdisk.cpio.gz
+		cd ${original_dir}/zip-creator/base/root/
+		find . | cpio -o -H newc > ${original_dir}/zip-creator/base/ramdisk.cpio.gz
+		cd ${original_dir}/
+
 		chmod a+x ${original_dir}/zip-creator/tools/mkqcdtbootimg
 		${original_dir}/zip-creator/tools/mkqcdtbootimg \
 			--kernel ${original_dir}/arch/arm/boot/zImage \
@@ -171,6 +176,7 @@ then
 			echo "  | ${color_red}Building *.img Failed! Exiting...${color_stock}"
 			break
 		fi
+		rm -rf ${original_dir}/zip-creator/base/ramdisk.cpio.gz
 
 		# Stock edition
 		if [ "${custom_kernel_branch}" == "JB-Stock" ]
