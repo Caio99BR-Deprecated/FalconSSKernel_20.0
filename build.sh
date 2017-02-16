@@ -157,7 +157,7 @@ then
 		chmod a+x ${original_dir}/zip-creator/tools/mkqcdtbootimg
 		${original_dir}/zip-creator/tools/mkqcdtbootimg \
 			--kernel ${original_dir}/arch/arm/boot/zImage \
-			--ramdisk ${original_dir}/zip-creator/base/kernel.ramdisk.gz \
+			--ramdisk ${original_dir}/zip-creator/base/ramdisk.cpio.gz \
 			--dt_dir ${original_dir}/arch/arm/boot \
 			--cmdline "${CMDLINE_VARIABLE}" \
 			--base 0x00000000 \
