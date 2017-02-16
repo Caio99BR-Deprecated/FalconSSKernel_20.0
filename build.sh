@@ -143,10 +143,6 @@ then
 
 		# Copy core files
 		cp ${original_dir}/zip-creator/base/update-binary ${zip_out}/META-INF/com/google/android/
-		cp ${original_dir}/zip-creator/base/mkbootimg ${zip_out}/
-		cp ${original_dir}/zip-creator/base/unpackbootimg ${zip_out}/
-		cp ${original_dir}/arch/${ARCH}/boot/zImage ${zip_out}/
-		cp ${original_dir}/zip-creator/base/dt.img ${zip_out}/
 
 		# Set device
 		echo "${builder}" >> ${zip_out}/device.prop
@@ -154,6 +150,22 @@ then
 		echo "${device_name}" >> ${zip_out}/device.prop
 		echo "Release ${release}" >> ${zip_out}/device.prop
 		echo "${custom_kernel_branch}" >> ${zip_out}/device.prop
+
+		# Transform cmdline to CMDLINE_VARIABLE
+		CMDLINE_VARIABLE="$(cat zip-creator/base/cmdline)"
+
+		chmod a+x ${original_dir}/zip-creator/tools/dtbToolCM
+		${original_dir}/zip-creator/tool/mkqcdtbootimg \
+			--kernel ${original_dir}/arch/arm/boot/zImage \
+			--ramdisk ${original_dir}/zip-creator/base/kernel.ramdisk.gz \
+			--dt_dir ${original_dir}/arch/arm/boot \
+			--cmdline "${CMDLINE_VARIABLE}" \
+			--base 0x00000000 \
+			--ramdisk_offset 0x02000000 \
+			--kernel_offset 0x00010000 \
+			--tags_offset 0x01E00000 \
+			--pagesize 2048 \
+			-o ${zip_out}/boot.img
 
 		# Stock edition
 		if [ "${custom_kernel_branch}" == "JB-Stock" ]
@@ -221,12 +233,6 @@ then
 else
 	wrong_choice
 fi
-}
-
-# Update DT Image to Live Ramdisk
-update_dt() {
-	chmod a+x ${original_dir}/zip-creator/tools/dtbToolCM
-	${original_dir}/zip-creator/tools/dtbToolCM -2 -s 2048 -p ${original_dir}/scripts/dtc/ ${original_dir}/arch/${ARCH}/boot/ -o ${original_dir}/zip-creator/base/dt.img
 }
 
 # Wrong choice
@@ -329,10 +335,9 @@ then
 					kernel_build_output="(OFF)"
 				fi;;
 			6) kernel_build;;
-#			7) zip_packer;;
-#			8) zip_copy_adb;;
+			7) zip_packer;;
+			8) zip_copy_adb;;
 			q|e) echo "${x} | Ok, Bye!"; break;;
-			u) update_dt;;
 			*) wrong_choice;;
 		esac
 	done
