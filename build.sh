@@ -41,7 +41,7 @@ case "${x}" in
 			cp .config arch/${ARCH}/configs/${device_defconfig}
 		fi;;
 esac
-if ! [ "${device_defconfig}" == "" ]
+if [ "${device_defconfig}" != "" ]
 then
 	echo "${x} | Working on ${device_name} defconfig!"
 	make -j${build_cpu_usage}${kernel_build_output_enable} ARCH="${ARCH}" CROSS_COMPILE="${kernel_build_ccache}${CROSS_COMPILE}" ${device_defconfig}
@@ -73,7 +73,7 @@ else
 	echo "  | Stay blank if you want to exit"
 	echo
 	read -p "  | Place | " CROSS_COMPILE
-	if ! [ "${CROSS_COMPILE}" == "" ]
+	if [ "${CROSS_COMPILE}" != "" ]
 	then
 		ToolchainCompile="${CROSS_COMPILE}"
 	fi
@@ -117,7 +117,7 @@ else
 
 	start_build_time=$(date +"%s")
 	make -j${build_cpu_usage}${kernel_build_output_enable} ARCH="${ARCH}" CROSS_COMPILE="${kernel_build_ccache}${CROSS_COMPILE}"
-	if ! [ "$?" == "0" ]
+	if [ "$?" != "0" ]
 	then
 		echo "  | ${color_red}Build Failed! Exiting...${color_stock}"
 		break
@@ -130,7 +130,7 @@ fi
 
 # Zip Packer Process
 zip_packer() {
-if ! [ "${device_defconfig}" == "" ]
+if [ "${device_defconfig}" != "" ]
 then
 	if [ -f arch/${ARCH}/boot/zImage ]
 	then
@@ -154,8 +154,8 @@ then
 		# Transform cmdline to CMDLINE_VARIABLE
 		CMDLINE_VARIABLE="$(cat zip-creator/base/cmdline)"
 
-		chmod a+x ${original_dir}/zip-creator/tools/dtbToolCM
-		${original_dir}/zip-creator/tool/mkqcdtbootimg \
+		chmod a+x ${original_dir}/zip-creator/tools/mkqcdtbootimg
+		${original_dir}/zip-creator/tools/mkqcdtbootimg \
 			--kernel ${original_dir}/arch/arm/boot/zImage \
 			--ramdisk ${original_dir}/zip-creator/base/kernel.ramdisk.gz \
 			--dt_dir ${original_dir}/arch/arm/boot \
@@ -166,6 +166,11 @@ then
 			--tags_offset 0x01E00000 \
 			--pagesize 2048 \
 			-o ${zip_out}/boot.img
+		if [ "$?" != "0" ]
+		then
+			echo "  | ${color_red}Building *.img Failed! Exiting...${color_stock}"
+			break
+		fi
 
 		# Stock edition
 		if [ "${custom_kernel_branch}" == "JB-Stock" ]
@@ -219,7 +224,7 @@ then
 	echo
 	adb shell rm -rf /data/media/0/${zipfile} &> /dev/null
 	adb push zip-creator/${zipfile} /data/media/0/${zipfile} &> /dev/null
-	if ! [ "$?" == "0" ]
+	if [ "$?" != "0" ]
 	then
 		echo "  | Copy failed!"
 		if [ ! "$(which adb)" ]
@@ -271,7 +276,7 @@ then
 			unset kernel_build_output_enable
 		fi
 		# Build Time
-		if ! [ "${build_time}" == "" ]
+		if [ "${build_time}" != "" ]
 		then
 			if [ "${build_time_minutes}" == "" ]
 			then
@@ -287,7 +292,7 @@ then
 		k_sub_level=$(cat Makefile | grep SUBLEVEL | cut -c 12- | head -1)
 		kernel_base="${k_version}.${k_patch_level}.${k_sub_level}"
 		release=$(date +%d""%m""%Y)
-		if ! [ -f .version ]
+		if [ ! -f .version ]
 		then
 			echo "0" > .version
 		fi
